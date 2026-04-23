@@ -369,18 +369,29 @@ class BidManagerClient:
         ]
     
     def get_available_date_ranges(self) -> List[str]:
-        """Get list of available date ranges."""
+        """Get list of available date ranges (Bid Manager API v2 DataRange.Range values)."""
         return [
+            "CURRENT_DAY",
+            "PREVIOUS_DAY",
+            "WEEK_TO_DATE",
+            "MONTH_TO_DATE",
+            "QUARTER_TO_DATE",
+            "YEAR_TO_DATE",
+            "PREVIOUS_WEEK",
+            "PREVIOUS_MONTH",
+            "PREVIOUS_QUARTER",
+            "PREVIOUS_YEAR",
             "LAST_7_DAYS",
-            "LAST_14_DAYS", 
+            "LAST_14_DAYS",
             "LAST_30_DAYS",
             "LAST_60_DAYS",
             "LAST_90_DAYS",
             "LAST_365_DAYS",
-            "MONTH_TO_DATE",
-            "QUARTER_TO_DATE",
-            "YEAR_TO_DATE",
-            "PREVIOUS_MONTH",
-            "PREVIOUS_QUARTER", 
-            "PREVIOUS_YEAR"
+            "ALL_TIME"
         ]
+
+    async def create_raw_query(self, body: Dict[str, Any]) -> Dict[str, Any]:
+        """Create a query using a raw query body dict, via the Bid Manager API."""
+        service = await self._get_service()
+        request = service.queries().create(body=body)
+        return await self._execute_request(request)

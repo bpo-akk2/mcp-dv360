@@ -162,10 +162,7 @@ class DV360Client:
     
     async def list_reports(self) -> List[Dict[str, Any]]:
         """List available reports (queries)."""
-        service = await self._get_service()
-        request = service.queries().list()
-        response = await self._execute_request(request)
-        return response.get('queries', [])
+        return await self.bid_manager.list_queries()
     
     async def create_campaign(self, advertiser_id: str, campaign_name: str, campaign_goal: str) -> Dict[str, Any]:
         """Create a new campaign."""
@@ -200,42 +197,19 @@ class DV360Client:
     
     async def get_campaign_performance(self, campaign_id: str, date_range: str) -> Dict[str, Any]:
         """Get performance metrics for a campaign."""
-        service = await self._get_service()
-        
-        # Create a query for campaign performance
-        query_body = {
-            'metadata': {
-                'title': f'Campaign Performance - {campaign_id}',
-                'dataRange': {
-                    'range': date_range.upper()
-                },
-                'format': 'JSON'
-            },
-            'params': {
-                'type': 'STANDARD',
-                'groupBys': ['FILTER_CAMPAIGN'],
-                'filters': [
-                    {
-                        'type': 'FILTER_CAMPAIGN',
-                        'value': campaign_id
-                    }
-                ],
-                'metrics': [
-                    'METRIC_IMPRESSIONS',
-                    'METRIC_CLICKS',
-                    'METRIC_CTR',
-                    'METRIC_TOTAL_CONVERSIONS',
-                    'METRIC_REVENUE_ADVERTISER'
-                ]
-            },
-            'schedule': {
-                'frequency': 'ONE_TIME'
-            }
-        }
-        
-        request = service.queries().create(body=query_body)
-        query_response = await self._execute_request(request)
-        
+        query_response = await self.bid_manager.create_performance_query(
+            advertiser_id=campaign_id,
+            campaign_id=campaign_id,
+            date_range=date_range,
+            metrics=[
+                'METRIC_IMPRESSIONS',
+                'METRIC_CLICKS',
+                'METRIC_CTR',
+                'METRIC_TOTAL_CONVERSIONS',
+                'METRIC_REVENUE_USD'
+            ]
+        )
+
         return {
             'campaignId': campaign_id,
             'dateRange': date_range,
@@ -430,40 +404,30 @@ class DV360Client:
     
     async def run_report_query(self, query_params: Dict[str, Any]) -> Dict[str, Any]:
         """Run a custom report query."""
-        service = await self._get_service()
-        request = service.queries().create(body=query_params)
-        return await self._execute_request(request)
+        return await self.bid_manager.create_raw_query(query_params)
     
     async def get_report_status(self, query_id: str) -> Dict[str, Any]:
         """Get status of a report query."""
-        service = await self._get_service()
-        request = service.queries().get(queryId=query_id)
-        return await self._execute_request(request)
+        return await self.bid_manager.get_query_status(query_id)
     
     async def download_report_data(self, query_id: str) -> Dict[str, Any]:
         """Download report data if ready."""
-        service = await self._get_service()
-        request = service.queries().reports().list(queryId=query_id)
-        response = await self._execute_request(request)
-        return response.get('reports', [])
+        return await self.bid_manager.get_report_data(query_id)
     
     async def list_saved_reports(self, advertiser_id: Optional[str] = None) -> List[Dict[str, Any]]:
         """List saved reports."""
-        service = await self._get_service()
-        request = service.queries().list()
-        response = await self._execute_request(request)
-        queries = response.get('queries', [])
-        
+        queries = await self.bid_manager.list_queries()
+
         if advertiser_id:
             # Filter by advertiser if specified
             filtered_queries = []
             for query in queries:
                 query_advertisers = query.get('params', {}).get('filters', [])
-                if any(f.get('value') == advertiser_id for f in query_advertisers 
+                if any(f.get('value') == advertiser_id for f in query_advertisers
                        if f.get('type') == 'FILTER_ADVERTISER'):
                     filtered_queries.append(query)
             return filtered_queries
-        
+
         return queries
     
     # ===== HELPER FUNCTIONS =====
@@ -504,35 +468,22 @@ class DV360Client:
         try:
             # Get campaign details
             campaign = await self.get_campaign_details(advertiser_id, campaign_id)
-            
-            # Create performance query
-            query_params = {
-                'metadata': {
-                    'title': f'Performance Summary - {campaign_id}',
-                    'dataRange': {'range': date_range},
-                    'format': 'JSON'
-                },
-                'params': {
-                    'type': 'STANDARD',
-                    'groupBys': ['FILTER_CAMPAIGN'],
-                    'filters': [
-                        {'type': 'FILTER_ADVERTISER', 'value': advertiser_id},
-                        {'type': 'FILTER_CAMPAIGN', 'value': campaign_id}
-                    ],
-                    'metrics': [
-                        'METRIC_IMPRESSIONS',
-                        'METRIC_CLICKS',
-                        'METRIC_CTR',
-                        'METRIC_TOTAL_CONVERSIONS',
-                        'METRIC_REVENUE_ADVERTISER',
-                        'METRIC_MEDIA_COST_ADVERTISER'
-                    ]
-                },
-                'schedule': {'frequency': 'ONE_TIME'}
-            }
-            
-            query_result = await self.run_report_query(query_params)
-            
+
+            # Create performance query via Bid Manager API
+            query_result = await self.bid_manager.create_performance_query(
+                advertiser_id=advertiser_id,
+                campaign_id=campaign_id,
+                date_range=date_range,
+                metrics=[
+                    'METRIC_IMPRESSIONS',
+                    'METRIC_CLICKS',
+                    'METRIC_CTR',
+                    'METRIC_TOTAL_CONVERSIONS',
+                    'METRIC_REVENUE_USD',
+                    'METRIC_MEDIA_COST_USD'
+                ]
+            )
+
             return {
                 'campaign': campaign,
                 'report_query_id': query_result.get('queryId'),

@@ -162,7 +162,14 @@ class DV360MCPServer:
                             },
                             "date_range": {
                                 "type": "string",
-                                "description": "Date range (LAST_7_DAYS, LAST_30_DAYS, etc.)"
+                                "description": "Date range for the report",
+                                "enum": [
+                                    "CURRENT_DAY", "PREVIOUS_DAY", "WEEK_TO_DATE", "MONTH_TO_DATE",
+                                    "QUARTER_TO_DATE", "YEAR_TO_DATE", "PREVIOUS_WEEK", "PREVIOUS_MONTH",
+                                    "PREVIOUS_QUARTER", "PREVIOUS_YEAR", "LAST_7_DAYS", "LAST_14_DAYS",
+                                    "LAST_30_DAYS", "LAST_60_DAYS", "LAST_90_DAYS", "LAST_365_DAYS",
+                                    "ALL_TIME"
+                                ]
                             }
                         },
                         "required": ["campaign_id", "date_range"]
@@ -275,7 +282,14 @@ class DV360MCPServer:
                             },
                             "date_range": {
                                 "type": "string",
-                                "description": "Date range (LAST_7_DAYS, LAST_30_DAYS, LAST_90_DAYS, etc.)",
+                                "description": "Date range for the report",
+                                "enum": [
+                                    "CURRENT_DAY", "PREVIOUS_DAY", "WEEK_TO_DATE", "MONTH_TO_DATE",
+                                    "QUARTER_TO_DATE", "YEAR_TO_DATE", "PREVIOUS_WEEK", "PREVIOUS_MONTH",
+                                    "PREVIOUS_QUARTER", "PREVIOUS_YEAR", "LAST_7_DAYS", "LAST_14_DAYS",
+                                    "LAST_30_DAYS", "LAST_60_DAYS", "LAST_90_DAYS", "LAST_365_DAYS",
+                                    "ALL_TIME"
+                                ],
                                 "default": "LAST_30_DAYS"
                             }
                         },
@@ -426,7 +440,14 @@ class DV360MCPServer:
                             },
                             "date_range": {
                                 "type": "string",
-                                "description": "Date range (LAST_7_DAYS, LAST_30_DAYS, LAST_90_DAYS, etc.)",
+                                "description": "Date range for the report",
+                                "enum": [
+                                    "CURRENT_DAY", "PREVIOUS_DAY", "WEEK_TO_DATE", "MONTH_TO_DATE",
+                                    "QUARTER_TO_DATE", "YEAR_TO_DATE", "PREVIOUS_WEEK", "PREVIOUS_MONTH",
+                                    "PREVIOUS_QUARTER", "PREVIOUS_YEAR", "LAST_7_DAYS", "LAST_14_DAYS",
+                                    "LAST_30_DAYS", "LAST_60_DAYS", "LAST_90_DAYS", "LAST_365_DAYS",
+                                    "ALL_TIME"
+                                ],
                                 "default": "LAST_30_DAYS"
                             }
                         },
@@ -445,7 +466,14 @@ class DV360MCPServer:
                             },
                             "date_range": {
                                 "type": "string",
-                                "description": "Date range (LAST_7_DAYS, LAST_30_DAYS, LAST_90_DAYS, etc.)",
+                                "description": "Date range for the report",
+                                "enum": [
+                                    "CURRENT_DAY", "PREVIOUS_DAY", "WEEK_TO_DATE", "MONTH_TO_DATE",
+                                    "QUARTER_TO_DATE", "YEAR_TO_DATE", "PREVIOUS_WEEK", "PREVIOUS_MONTH",
+                                    "PREVIOUS_QUARTER", "PREVIOUS_YEAR", "LAST_7_DAYS", "LAST_14_DAYS",
+                                    "LAST_30_DAYS", "LAST_60_DAYS", "LAST_90_DAYS", "LAST_365_DAYS",
+                                    "ALL_TIME"
+                                ],
                                 "default": "LAST_30_DAYS"
                             }
                         },
@@ -468,7 +496,14 @@ class DV360MCPServer:
                             },
                             "date_range": {
                                 "type": "string",
-                                "description": "Date range (LAST_7_DAYS, LAST_30_DAYS, LAST_90_DAYS, etc.)",
+                                "description": "Date range for the report",
+                                "enum": [
+                                    "CURRENT_DAY", "PREVIOUS_DAY", "WEEK_TO_DATE", "MONTH_TO_DATE",
+                                    "QUARTER_TO_DATE", "YEAR_TO_DATE", "PREVIOUS_WEEK", "PREVIOUS_MONTH",
+                                    "PREVIOUS_QUARTER", "PREVIOUS_YEAR", "LAST_7_DAYS", "LAST_14_DAYS",
+                                    "LAST_30_DAYS", "LAST_60_DAYS", "LAST_90_DAYS", "LAST_365_DAYS",
+                                    "ALL_TIME"
+                                ],
                                 "default": "LAST_30_DAYS"
                             }
                         },
@@ -495,7 +530,14 @@ class DV360MCPServer:
                             },
                             "date_range": {
                                 "type": "string",
-                                "description": "Date range (LAST_7_DAYS, LAST_30_DAYS, etc.)",
+                                "description": "Date range for the report",
+                                "enum": [
+                                    "CURRENT_DAY", "PREVIOUS_DAY", "WEEK_TO_DATE", "MONTH_TO_DATE",
+                                    "QUARTER_TO_DATE", "YEAR_TO_DATE", "PREVIOUS_WEEK", "PREVIOUS_MONTH",
+                                    "PREVIOUS_QUARTER", "PREVIOUS_YEAR", "LAST_7_DAYS", "LAST_14_DAYS",
+                                    "LAST_30_DAYS", "LAST_60_DAYS", "LAST_90_DAYS", "LAST_365_DAYS",
+                                    "ALL_TIME"
+                                ],
                                 "default": "LAST_30_DAYS"
                             },
                             "metrics": {
