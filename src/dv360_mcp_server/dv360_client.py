@@ -520,7 +520,8 @@ class DV360Client:
         """Create a custom performance report with specified metrics."""
         return await self.bid_manager.create_performance_query(
             advertiser_id=advertiser_id,
-            campaign_id=campaign_id, 
+            campaign_id=campaign_id,
+            line_item_id=line_item_id,
             date_range=date_range,
             metrics=metrics
         )

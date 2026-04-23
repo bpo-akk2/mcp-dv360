@@ -80,8 +80,9 @@ class BidManagerClient:
     
     # ===== PERFORMANCE REPORTING FUNCTIONS =====
     
-    async def create_performance_query(self, advertiser_id: str, campaign_id: Optional[str] = None, 
-                                     date_range: str = "LAST_30_DAYS", 
+    async def create_performance_query(self, advertiser_id: str, campaign_id: Optional[str] = None,
+                                     line_item_id: Optional[str] = None,
+                                     date_range: str = "LAST_30_DAYS",
                                      metrics: Optional[List[str]] = None) -> Dict[str, Any]:
         """Create a performance query for getting impressions, clicks, CTR, etc."""
         service = await self._get_service()
@@ -111,7 +112,13 @@ class BidManagerClient:
                 "type": "FILTER_CAMPAIGN",
                 "value": campaign_id
             })
-        
+
+        if line_item_id:
+            filters.append({
+                "type": "FILTER_LINE_ITEM",
+                "value": line_item_id
+            })
+
         query_body = {
             "metadata": {
                 "title": f"Performance Report - {advertiser_id}" + (f" - {campaign_id}" if campaign_id else ""),
