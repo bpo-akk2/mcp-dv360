@@ -306,6 +306,9 @@ class BidManagerClient:
             
             query_id = query_response.get('queryId')
 
+            if not query_id:
+                return {'error': 'Failed to create line item performance query'}
+
             # Run the query to trigger report generation
             logger.info(f"Running query {query_id} for line item performance ...")
             await self.run_query(query_id)
@@ -373,7 +376,9 @@ class BidManagerClient:
             # The Bid Manager API returns a direct HTTPS URL
             # (e.g. https://storage.googleapis.com/...) not a gs:// path.
             if gcs_path:
-                csv_data = self._download_and_parse_csv(gcs_path)
+                csv_data = await asyncio.get_event_loop().run_in_executor(
+                    self.executor, self._download_and_parse_csv, gcs_path
+                )
                 result['csv_data'] = csv_data
 
             return result
@@ -388,7 +393,7 @@ class BidManagerClient:
         Returns None on failure so callers can fall back to the raw GCS path.
         """
         try:
-            logger.info(f"Downloading report CSV from {url} ...")
+            logger.info(f"Downloading report CSV from {url.split('?')[0]} ...")
             response = http_requests.get(url, timeout=60)
             response.raise_for_status()
             content = response.text
